@@ -14,7 +14,7 @@ class Group extends React.Component {
 		// we know a form should be generated after the click so we set the new state
 		if (!this.state.editGroupClicked) {
 			this.setState({
-				editGroupForm: <EditGroup currentUser={this.props.currentUser} oldGroupName={this.props.name} handleEditClick={this.handleEditClick.bind(this)}/>,
+				editGroupForm: <EditGroup getGroups={this.props.getGroups} currentUser={this.props.currentUser} setCurrentGroup={this.props.setCurrentGroup} currentGroupName={this.props.name} currentGroup={this.props.currentGroup} handleEditClick={this.handleEditClick.bind(this)}/>,
 				editGroupClicked: true
 			})
 		} else {
@@ -29,8 +29,8 @@ class Group extends React.Component {
 	render() {
 		return (
 	  <div className='group'>
-	    <span><a href='#' className='group-name' onClick={() => this.props.clickHandler(this.props.name)}>{this.props.name}</a></span>
-	    <a href='#' className='group-edit' onClick={this.handleEditClick.bind(this)}>Edit...</a>
+	    <span><a href='#' className='group-name' onClick={() => this.props.setCurrentGroup(this.props.name)}>{this.props.name}</a></span>
+	    <a href='#' className='group-edit' onClick={this.handleEditClick.bind(this)}>edit</a>
 	    {this.state.editGroupForm}
 	  </div>
 		);

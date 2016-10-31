@@ -27,7 +27,7 @@ class EditGroup extends React.Component {
 
   getGroup(cb) {
   	$.ajax({
-  		url: '/pages/' + encodeURI(this.props.currentUser) + '/' + encodeURI(this.props.oldGroupName),
+  		url: '/pages/' + encodeURI(this.props.currentUser) + '/' + encodeURI(this.props.currentGroupName),
   		method: 'GET',
       contentType: 'application/json',
   		success: (data) => {
@@ -45,11 +45,11 @@ class EditGroup extends React.Component {
 
   sendChanges(newGroupName, members) {
   	$.ajax({
-  		url: '/pages/' + encodeURI(this.props.currentUser) + '/' + encodeURI(this.props.oldGroupName),
+  		url: '/pages/' + encodeURI(this.props.currentUser) + '/' + encodeURI(this.props.currentGroupName),
   		method: 'PUT',
   		data: JSON.stringify({
   			newGroupName: newGroupName,
-  			oldGroupName: this.props.oldGroupName,
+  			oldGroupName: this.props.currentGroupName,
   			username: this.props.currentUser,
   			members: members
   		}),
@@ -114,7 +114,18 @@ class EditGroup extends React.Component {
     var newGroupName = this.getNewGroupName();
 
 		this.sendChanges(newGroupName, members);
+    
+    // setting the current group updates the feed--
+    // this updates the feed if the group being edited is currently
+    // the group being displayed
+    if (this.props.currentGroup === this.props.currentGroupName) {
+      this.props.setCurrentGroup(newGroupName);
+    }
+    
+    // fetches groups with changes for sidebar
+    this.props.getGroups();
 
+    // closes the edit form
   	this.props.handleEditClick(e);
   }
 
@@ -122,13 +133,17 @@ class EditGroup extends React.Component {
 		return (
 			<div className='edit-group-form'>
 	        <form className='edit-group'>
-	          <input ref='newGroupName' className='edit-group-name' placeholder='Group Name' defaultValue={this.props.oldGroupName}></input>
+	          <input ref='newGroupName' className='edit-group-name' placeholder='Group Name' defaultValue={this.props.currentGroupName}></input>
 	          <div ref='groupMembers'>
 	            {this.state.memberForms}
 	          </div>
-	          <button className='add-another-member-button' onClick={this.addGroupMember.bind(this)}>Add another member</button>
+            <div className='add-member-link'>
+	           <a href='#' onClick={this.addGroupMember.bind(this)}>add another member</a>
+            </div>
 	        </form>
-	        <button className='save-changes-button' onClick={this.handleSaveChangesClick.bind(this)}>Save Changes</button>
+          <div className='button-container'>
+	        <button className='save-changes-button btn btn-primary' onClick={this.handleSaveChangesClick.bind(this)}>Save Changes</button>
+          </div>
 	      </div>
 		);
 	}
